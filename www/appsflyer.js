@@ -54,9 +54,19 @@
              argscheck.checkArgs('S', 'AppsFlyer.setAppUserId', arguments);
             exec(null, null, "AppsFlyerPlugin", "setAppUserId", [customerUserId]);
         };
+        /**
+         *
+         * @deprecated use {@link #enableUninstallTracking(String)} instead.
+         */
         AppsFlyer.prototype.setGCMProjectNumber = function (gcmProjectNumber) {
             argscheck.checkArgs('S', 'AppsFlyer.setGCMProjectNumber', arguments);
             exec(null, null, "AppsFlyerPlugin", "setGCMProjectNumber", [gcmProjectNumber]);
+        };
+
+        // ios only
+        AppsFlyer.prototype.registerUninstall = function (token) {
+            argscheck.checkArgs('S', 'AppsFlyer.registerUninstall', arguments);
+            exec(null, null, "AppsFlyerPlugin", "registerUninstall", [token]);
         };
 
         AppsFlyer.prototype.getAppsFlyerUID = function (successCB) {
@@ -79,6 +89,7 @@
             exec(null, null, "AppsFlyerPlugin", "trackEvent", [eventName, eventValue]);
         };
 
+         // android only
         AppsFlyer.prototype.enableUninstallTracking = function (gcmProjectNumber,successCB, errorCB) {
             argscheck.checkArgs('S', 'AppsFlyer.enableUninstallTracking', arguments);
             exec(successCB, errorCB, "AppsFlyerPlugin", "enableUninstallTracking", [gcmProjectNumber]);

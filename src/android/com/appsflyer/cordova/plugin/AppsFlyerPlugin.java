@@ -126,6 +126,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		String devKey = null;
 		boolean isConversionData;
 		boolean isDebug = false;
+		String androidIdData = null;
 
 		AppsFlyerProperties.getInstance().set(AppsFlyerProperties.LAUNCH_PROTECT_ENABLED, false);
 		AppsFlyerLib instance = AppsFlyerLib.getInstance();
@@ -135,6 +136,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 			devKey = options.optString(AF_DEV_KEY, "");
 			isConversionData = options.optBoolean(AF_CONVERSION_DATA, false);
+			androidIdData = options.optString(AF_ANDROID_ID_DATA, "");
 
 			if(devKey.trim().equals("")){
 				callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, NO_DEVKEY_FOUND));
@@ -142,6 +144,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 			isDebug = options.optBoolean(AF_IS_DEBUG, false);
 
+			instance.setAndroidIdData(androidIdData);
 			instance.setDebugLog(isDebug);
 
 			if(isDebug == true){

@@ -10,6 +10,9 @@ Thumbs.db
 *.swp
 *.user
 
+.idea
+cordova-plugin-appsflyer-sdk.iml
+
 node_modules/
 
 

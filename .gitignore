@@ -17,4 +17,4 @@ node_modules/
 
 
 examples/demoA/node_modules/
-#/examples/demoA/www/lib/
+/examples/demoA/www/lib/

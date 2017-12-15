@@ -16,10 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- //
-var handleOpenURL = function(url) {
-    window.plugins.appsFlyer.handleOpenUrl(url);
-}
 var app = {
     // Application Constructor
     initialize: function() {

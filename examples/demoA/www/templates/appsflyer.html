@@ -31,18 +31,12 @@
         
         
         <row-data-directive ng-if="$root.isAndroid === true"
-            button-text="enableUninstallTracking"
-            data='viewModel.enableUninstallTrackingResponse'
+            button-text="setGCMProjectID"
+            data='viewModel.gcmProjectIDResponse'
             on-click="onClick(data)">                
         </row-data-directive>
-        
-        <row-data-directive ng-if="$root.isAndroid === true"
-            button-text="gcmProjectNumber"
-            data='viewModel.gcmProjectNumberResponse'
-            on-click="onClick(data)">                
-        </row-data-directive>
-        
-        
+
+<!--        <pre>$root.isAndroid 2: {{$root.isAndroid}}</pre>-->
         
     </ion-content>
 </ion-pane>

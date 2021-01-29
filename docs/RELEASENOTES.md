@@ -1,4 +1,12 @@
 # Release Notes
+### 6.2.10
+Release date **January 27, 2021**
+Release type: Major / **Minor** / Hotfix
+
+**Overview and Highlights:**
+
+- Add Unified DDL
+
 ### 6.2.0
 Release date **January 17, 2021**
 Release type: Major / **Minor** / Hotfix
@@ -157,15 +165,6 @@ Release date **March 10 2020**
 
 - Updated iOS SDK to v5.2.0
 
-
-### 4.4.22
-Release date **Sep 16 2019**
-Release type: Major / **Minor** / Hotfix
-
-**Overview and Highlights:**
-
-- Update iOS SDK to 4.10.4, for iOS 13 push token retrieval needed for Uninstall Measurement
-- Bug fixes and maintenance
 
 ### 4.4.12
 Release date **Nov 14 2018**

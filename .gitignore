@@ -3,15 +3,13 @@
 *.cache
 Thumbs.db
 *.DS_Store
-
+*.idea
+*.vscode
 *.bak
 *.cache
 *.log
 *.swp
 *.user
-
-.idea
-cordova-plugin-appsflyer-sdk.iml
 
 node_modules/
 

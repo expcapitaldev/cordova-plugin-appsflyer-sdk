@@ -1,507 +1,227 @@
-<img src="https://www.appsflyer.com/wp-content/uploads/2016/11/logo-1.svg"  width="200">
+
+<img src="https://www.appsflyer.com/wp-content/uploads/2016/11/logo-1.svg"  width="600">
 
 # Cordova AppsFlyer plugin for Android and iOS. 
 
-[![npm version](https://badge.fury.io/js/cordova-plugin-appsflyer-sdk.svg)](https://badge.fury.io/js/cordova-plugin-appsflyer-sdk) [![Build Status](https://travis-ci.org/AppsFlyerSDK/cordova-plugin-appsflyer-sdk.svg?branch=master)](https://travis-ci.org/AppsFlyerSDK/cordova-plugin-appsflyer-sdk)
+[![npm version](https://badge.fury.io/js/cordova-plugin-appsflyer-sdk.svg)](https://badge.fury.io/js/cordova-plugin-appsflyer-sdk)
+[![Build Status](https://travis-ci.org/AppsFlyerSDK/appsflyer-cordova-plugin.svg?branch=master)](https://travis-ci.org/AppsFlyerSDK/appsflyer-cordova-plugin)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) 
+[![Downloads](https://img.shields.io/npm/dm/cordova-plugin-appsflyer-sdk.svg)](https://www.npmjs.com/package/cordova-plugin-appsflyer-sdk)
 
 ----------
-In order for us to provide optimal support, we would kindly ask you to submit any issues to support@appsflyer.com
+**❗️Important** <br>
+- Cordova AppsFlyer plugin version **4.4.0** and higher are meant to be used with **cordova-android@7.0.0** and up <br>
+For lower versions of cordova-android please use plugin version 4.3.3 available @ https://github.com/AppsFlyerSDK/cordova-plugin-appsflyer-sdk/tree/4.3.3 <br>
+- From version **6.1.10** the plugin uses cocoapods(NOT StaticLib) in order to support iOS app-kids Strict mode. <br>
+You can read more [here](https://support.appsflyer.com/hc/en-us/articles/207032066#integration-strict-mode-sdk)
+----------
+🛠 In order for us to provide optimal support, we would kindly ask you to submit any issues to support@appsflyer.com
 
-*When submitting an issue please specify your AppsFlyer sign-up (account) email , your app ID , production steps, logs, code snippets and any additional relevant information.*
+*When submitting an issue please specify your AppsFlyer sign-up (account) email , your app ID , reproduction steps, code snippets, logs, and any additional relevant information.*
 
 ----------
 
 ## Table of content
 
-- [Supported Platforms](#supported-platforms)
 - [SDK versions](#plugin-build-for)
-- [Installation using CLI](#installation-using-cli)
-- [Manual installation](#manual-installation)
-  - [iOS](#manual-installation-ios)
-  - [Android](#manual-installation-android)
-- [Usage](#usage)
- - [for pure Cordova](#usage-pure) 
- - [For Ionic](#usage-ionic1)
-- [API Methods](#api-methods) 
- - [initSdk](#initSdk) 
- - [trackEvent](#trackEvent)
- - [deviceTrackingDisabled](#deviceTrackingDisabled)
- - [setCurrencyCode](#setCurrencyCode)
- - [setAppUserId](#setAppUserId)
- - [enableUninstallTracking](#enableUninstallTracking)
- - [setGCMProjectID](#setGCMProjectID)
- - [updateServerUninstallToken](#updateServerUninstallToken)
- - [getAppsFlyerUID](#getAppsFlyerUID)
- - [setAppInviteOneLinkID](#setAppInviteOneLinkID)
- - [generateInviteLink](#generateInviteLink)
- - [trackCrossPromotionImpression](#trackCrossPromotionImpression)
- - [trackAndOpenStore](#trackAndOpenStore)
-- [Deep linking Tracking](#deep-linking-tracking) 
- - [Android](#dl-android)
- - [iOS URL Types](#dl-ios)
- - [iOS Universal Links](#dl-ul)
-- [Sample App](#sample-app)  
-
-## <a id="supported-platforms"> Supported Platforms
-
-- Android
-- iOS 8+
-
+- [V6 Breaking Changes](#breakingChanges)
+- [Installation](#installation)
+- [Add or Remove Strict mode for App-kids](#appKids)
+- [Guides](#guides)
+- [Setup](#setup)
+- [API](#api) 
+- [Demo](#demo)  
+- [Ionic](#ionic)
 
 
 ### <a id="plugin-build-for"> This plugin is built for
 
-- iOS AppsFlyerSDK **v4.8.1**
-- Android AppsFlyerSDK **v4.8.3**
+- iOS AppsFlyerSDK **v6.1.3**
+- Android AppsFlyerSDK **v6.1.3**
+
+### <a id="breakingChanges"> ❗v6 Breaking Changes
+
+We have renamed the following APIs:
+
+| Old API | New API |
+|---------|---------|
+|trackEvent      |  logEvent|
+|stopTracking      |  Stop|
+|trackCrossPromotionImpression |  logCrossPromotionImpression|
+|trackAndOpenStore      |  logCrossPromotionAndOpenStore|
+|setDeviceTrackingDisabled      |  anonymizeUser|
 
 
-## <a id="installation-using-cli"> Installation using CLI:
+## <a id="installation">📲Installation
 
 ```
 $ cordova plugin add cordova-plugin-appsflyer-sdk
 ```
-or directly from git:
 
+To install cordova manually check out the doc [here](/docs/Installation.md).
+
+> **_NOTE:_** for Ionic installation see [this](#ionic) section
+
+## <a id="appKids">👨‍👩‍👧‍👦 Add or Remove Strict mode for App-kids
+Starting from version **6.1.10** iOS SDK comes in two variants: **Strict** mode and **Regular** mode. Please read more [here](https://support.appsflyer.com/hc/en-us/articles/207032066#integration-strict-mode-sdk)
+***Change to Strict mode***<br>
+After you [installed](#installation) the AppsFlyer plugin, go to the `ios` folder inside `platform` folder:
 ```
-$ cordova plugin add https://github.com/AppsFlyerSDK/cordova-plugin-appsflyer-sdk.git
+cd platform/ios
 ```
+open the `Podfile` and replace `pod 'AppsFlyerFramework', '6.1.1'` with `pod 'AppsFlyerFramework/Strict', '6.1.1'`
 
-## <a id="manual-installation"> Manual installation:
+Run `pod install` inside the `ios` folder
 
-1\. Add the following xml to your `config.xml` in the root directory of your `www` folder:
-```xml
-<!-- for iOS -->
-<feature name="AppsFlyerPlugin">
-  <param name="ios-package" value="AppsFlyerPlugin" />
-</feature>
+inside xcode, go to your target and define Preprocessor Macro `AFSDK_NO_IDFA=1`
+![Add Preprocessor macro](https://github.com/amit-kremer93/resources/blob/main/preprocessorMacro.png)
+
+
+***Change to Regular mode***<br>
+Go to the `ios` folder inside `platform` folder:
 ```
-```xml
-<!-- for Android -->
-<feature name="AppsFlyerPlugin">
-  <param name="android-package" value="com.appsflyer.cordova.plugin.AppsFlyerPlugin" />
-</feature>
+cd platform/ios
 ```
-2\. For Android, add the following xml to your `AndroidManifest.xml`:
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-```
-Inside the `<aplication>` tag,  add the following receiver:
-```xml
-<receiver android:exported="true"    android:name="com.appsflyer.MultipleInstallBroadcastReceiver">
-    <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
-    </intent-filter>
-</receiver>
-```
-        
-3\. Copy appsflyer.js to `www/js/plugins` and reference it in `index.html`:
-```html
-<script type="text/javascript" src="js/plugins/appsflyer.js"></script>
-```
-4\. Download the source files and copy them to your project.
+open the `Podfile` and replace `pod 'AppsFlyerFramework/Strict', '6.1.1'` with `pod 'AppsFlyerFramework', '6.1.1'`
 
-##### <a id="manual-installation-ios"> **iOS:** 
-Copy:
+Run `pod install` inside the `ios` folder
 
- - `AppsFlyerPlugin.h`
- - `AppsFlyerPlugin.m`
- - `AppsFlyerTracker.h`
- - `libAppsFlyerLib.a`
-to `platforms/ios/<ProjectName>/Plugins`
+inside xcode, go to your target and remove the Preprocessor Macro `AFSDK_NO_IDFA=1`
 
-##### <a id="manual-installation-android"> **Android:** 
+ ## <a id="guides"> 📖 Guides
 
-Copy `AppsFlyerPlugin.java` to `platforms/android/src/com/appsflyer/cordova/plugins` (create the folders)
+Great installation and setup guides can be viewed [here](/docs/Guides.md).
+- [init SDK Guide](/docs/Guides.md#init-sdk)
+- [Deeplinking Guide](/docs/Guides.md#deeplinking)
+- [Uninstall Guide](/docs/Guides.md#uninstall)
+- [Set plugin for IOS 14](/docs/Guides.md#ios14)
 
-   
-## <a id="usage"> Usage:
 
-#### 1\. Set your App_ID (iOS only), Dev_Key and enable AppsFlyer to detect installations, sessions (app opens) and updates.  
+## <a id="setup"> 🚀 Setup
+
+####  Set your App_ID (iOS only), Dev_Key and enable AppsFlyer to detect installations, sessions (app opens) and updates.  
 > This is the minimum requirement to start tracking your app installs and is already implemented in this plugin. You **MUST** modify this call and provide:  
- **-devKey** - Your application devKey provided by AppsFlyer.
-**-appId**  - ***For iOS only.*** Your iTunes Application ID.
-
+ **devKey** - Your application devKey provided by AppsFlyer.<br>
+**appId**  - ***For iOS only.*** Your iTunes Application ID.<br>
+**waitForATTUserAuthorization**  - ***For iOS14 only.*** Time for the sdk to wait before launch.
 
 
 Add the following lines to your code to be able to initialize tracking with your own AppsFlyer dev key:
 
-##### <a id="usage-pure"> **for pure Cordova:**
-```javascript
-document.addEventListener("deviceready", function(){
-    
-   var options = {
-             devKey:  'xxXXXXXxXxXXXXxXXxxxx8'// your AppsFlyer devKey               
-           };
 
-    var userAgent = window.navigator.userAgent.toLowerCase();
-                          
-    if (/iphone|ipad|ipod/.test( userAgent )) {
-        options.appId = "123456789";            // your ios app id in app store        
-    }
-    window.plugins.appsFlyer.initSdk(options);
+```javascript
+document.addEventListener('deviceready', function() {
+
+   window.plugins.appsFlyer.initSdk({
+      devKey: 'K2***************99', // your AppsFlyer devKey
+      isDebug: false,
+      appId: '41*****44', // your ios appID
+      waitForATTUserAuthorization: 10, //time for the sdk to wait before launch - IOS 14 ONLY!
+    },
+      (result) => {
+        console.log(result);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  
 }, false);
 ```
-
-##### <a id="usage-ionic1"> **For Ionic 1**
-
-```javascript
-  $ionicPlatform.ready(function() {      
-    
-    var options = {
-           devKey:  'xxXXXXXxXxXXXXxXXxxxx8'// your AppsFlyer devKey               
-         };
-                              
-    if (ionic.Platform.isIOS()) {
-        options.appId = "123456789";            // your ios app id in app store 
-    }
-
-      window.plugins.appsFlyer.initSdk(options);      
-  });
-```
-
-
-##<a id="api-methods"> API Methods
-
----
-
-##### <a id="initSdk"> **`initSdk(options, onSuccess, onError): void`**
-
-initialize the SDK.
-
-| parameter   | type                        | description  |
-| ----------- |-----------------------------|--------------|
-| `options`   | `Object`                    |   SDK configuration           |
-| `onSuccess` | `(message: string)=>void` | Success callback - called after successfull SDK initialization. (optional)|
-| `onError`   | `(message: string)=>void` | Error callback - called when error occurs during initialization. (optional)|
-
-**`options`**
-
-| name       | type    | default | description            |
-| -----------|---------|---------|------------------------|
-| `devKey`   |`string` |         |   [Appsflyer Dev key](https://support.appsflyer.com/hc/en-us/articles/207032126-AppsFlyer-SDK-Integration-Android)    |
-| `appId`    |`string` |        | [Apple Application ID](https://support.appsflyer.com/hc/en-us/articles/207032066-AppsFlyer-SDK-Integration-iOS) (for iOS only) |
-| `isDebug`  |`boolean`| `false` | debug mode (optional)|
-| `onInstallConversionDataListener`  |`boolean`| `false` | Accessing AppsFlyer Attribution / Conversion Data from the SDK (Deferred Deeplinking). Read more: [Android](http://support.appsflyer.com/entries/69796693-Accessing-AppsFlyer-Attribution-Conversion-Data-from-the-SDK-Deferred-Deep-linking-), [iOS](http://support.appsflyer.com/entries/22904293-Testing-AppsFlyer-iOS-SDK-Integration-Before-Submitting-to-the-App-Store-). AppsFlyer plugin will return attribution data in `onSuccess` callback. 
-
-*Example:*
-
-```javascript
-var onSuccess = function(result) {
-     //handle result
-};
-
-function onError(err) {
-    // handle error
-}
-var options = {
-               devKey:  'd3Ac9qPardVYZxfWmCspwL',
-               appId: '123456789',
-               isDebug: false,
-               onInstallConversionDataListener: true
-             };
-window.plugins.appsFlyer.initSdk(options, onSuccess, onError);
-```
-
----
-
-##### <a id="trackEvent"> **`trackEvent(eventName, eventValues): void`** (optional)
-
-
-- These in-app events help you track how loyal users discover your app, and attribute them to specific 
-campaigns/media-sources. Please take the time define the event/s you want to measure to allow you 
-to track ROI (Return on Investment) and LTV (Lifetime Value).
-- The `trackEvent` method allows you to send in-app events to AppsFlyer analytics. This method allows you to add events dynamically by adding them directly to the application code.
-
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `eventName` | `String`                    | custom event name, is presented in your dashboard.  See the Event list [HERE](https://github.com/AppsFlyerSDK/cordova-plugin-appsflyer-sdk/blob/master/src/ios/AppsFlyerTracker.h)  |
-| `eventValue` | `Object`                    | event details |
-
-*Example:*
-
-```javascript
-var eventName = "af_add_to_cart";
-var eventValues = {
-           "af_content_id": "id123",
-           "af_currency":"USD",
-           "af_revenue": "2"
-           };
-window.plugins.appsFlyer.trackEvent(eventName, eventValues);
-```
----
-
-##### <a id="deviceTrackingDisabled"> **`deviceTrackingDisabled(bool): void`**
-**End User Opt-Out (Optional)** 
-AppsFlyer provides you a method to opt‐out specific users from AppsFlyer analytics. This method complies with the latest privacy requirements and complies with Facebook data and privacy policies. Default is FALSE, meaning tracking is enabled by default.
-
-*Examples:*
-
-```javascript
-window.plugins.appsFlyer.setDeviceTrackingDisabled(true);
-```
----
-
-##### <a id="setCurrencyCode"> **`setCurrencyCode(currencyId): void`**
-
-
-| parameter   | type                  | Default     | description |
-| ----------- |-----------------------|-------------|-------------|
-| `currencyId`| `String`              |   `USD`     |  [ISO 4217 Currency Codes](http://www.xe.com/iso4217.php)           |
-
-*Examples:*
-
-```javascript
-window.plugins.appsFlyer.setCurrencyCode("USD");
-window.plugins.appsFlyer.setCurrencyCode("GBP"); // British Pound
-```
-
----
-
-##### <a id="setAppUserId"> **`setAppUserId(customerUserId): void`**
-
-
-Setting your own Custom ID enables you to cross-reference your own unique ID with AppsFlyer’s user ID and the other devices’ IDs. This ID is available in AppsFlyer CSV reports along with postbacks APIs for cross-referencing with you internal IDs.
- 
-**Note:** The ID must be set during the first launch of the app at the SDK initialization. The best practice is to call this API during the `deviceready` event, where possible.
-
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `customerUserId`   | `String`                      | |
-
-*Example:*
-
-```javascript
-window.plugins.appsFlyer.setAppUserId(userId);
-```
 ---
 
 
-
-
-##### <a id="enableUninstallTracking"> **`enableUninstallTracking(token, onSuccess, onError): void`** 
-
-Enables app uninstall tracking.
-<a href="https://support.appsflyer.com/hc/en-us/articles/211211963-iOS-Uninstall-Tracking">More Information</a>
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `FCM/GCM ProjectNumber`   | `String`    | GCM/FCM ProjectNumber |
-| `onSuccess` | `(message: string)=>void` | Success callback - called after successfull register uninstall. (optional)|
-| `onError`   | `(message: string)=>void` | Error callback - called when error occurs during register uninstall. (optional)|
-
-
----
-
-##### <a id="setGCMProjectID"> **`setGCMProjectID(GCMProjectNumber): void`** *Deprecated*
-
-AppsFlyer requires a Google Project Number to enable uninstall tracking.
-<a href="https://support.appsflyer.com/hc/en-us/articles/208004986-Android-Uninstall-Tracking">More Information</a>
-
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `GCMProjectNumber`   | `String`           | GCM ProjectNumber |
-
-
----
-
-##### <a id="updateServerUninstallToken"> **`updateServerUninstallToken("token"): void`** 
-
-Allows to pass GCM/FCM Tokens that where collected by third party plugins to the AppsFlyer server.
-Can be used for Uninstall Tracking.
-
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `token`   | `String`                      | GCM/FCM Token|
-
-
----
-
-##### <a id="getAppsFlyerUID"> **`getAppsFlyerUID(successCB): void`**  (Advanced)
-
-Get AppsFlyer’s proprietary Device ID. The AppsFlyer Device ID is the main ID used by AppsFlyer in Reports and APIs.
-
-```javascript
-function getUserIdCallbackFn(id){/* ... */} 
-window.plugins.appsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
-```
-*Example:*
-
-```javascript
-var getUserIdCallbackFn = function(id) {
-    alert('received id is: ' + id);
-}
-window.plugins.appsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
-```
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `getUserIdCallbackFn` | `() => void`                | Success callback |
-
-
----
-
-##### <a id="setAppInviteOneLinkID"> **`setAppInviteOneLinkID(OneLinkID): void`**  (User Invite / Cross Promotion)
-
-Set AppsFlyer’s OneLink ID. Setting a valid OneLink ID will result in shortened User Invite links, when one is generated. The OneLink ID can be obtained on the AppsFlyer Dashboard.
-
-*Example:*
-```javascript
-window.plugins.appsFlyer.setAppInviteOneLinkID("Ab1C");
-```
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `OneLinkID` | `String`                    | OneLink ID |
-
-
----
-
-##### <a id="generateInviteLink"> **`generateInviteLink(options, onSuccess, onError): void`**  (User Invite)
-
-Allowing your existing users to invite their friends and contacts as new users to your app can be a key growth factor for your app. AppsFlyer allows you to track and attribute new installs originating from user invites within your app.
-
-*Example:*
-```javascript
-var inviteOptions {
-  channel: "gmail",
-  campaign: "myCampaign",
-  customerID: "1234",
+## <a id="api"> 📑 API
   
-  userParams {
-    myParam : "newUser",
-    anotherParam : "fromWeb",
-    amount : 1
-  }
-};
+See the full [API](/docs/API.md) available for this plugin.
 
-var onInviteLinkSuccess = function(link) {
-  console.log(link); // Handle Generated Link Here
-}
 
-function onInviteLinkError(err) {
-  console.log(err);
-}
+## <a id="demo"> 📱 Demo
+Check out the demo for this project [here](docs/Guides.md#demo).<br>
+There is 1 demo project called ```demoC```, run ```npm run setup_c``` in the appsflyer-cordova-plugin folder and then open the ios project in Xcode to see implementation for IOS 14.<br>
+Check out our Sample-App  **Let's cook!** [here](https://github.com/AppsFlyerSDK/appsflyer-cordova-app) if you want to implement our SDK inside React-Cordova app
+## <a id="ionic"> 📍 Ionic
+***NOTICE!*** In AppsFlyer Cordova plugin version 6.x.x we replaced the word ``track`` with ``log`` from all our api but Ionic-Navite Appsflyer plugin still uses ``track``<br>
+So the latest version that can work with Ionic-Native for now is **5.4.30**<br>
 
-window.plugins.appsFlyer.generateInviteLink(inviteOptions, onInviteLinkSuccess, onInviteLinkError);
+In case you are using Ionic framework, you have 2 options:
+###  1. Using the `window` object directly
+Install the cordova plugin:
 ```
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `inviteOptions` | `Object`                    |Parameters for Invite link  |
-| `onInviteLinkSuccess` | `() => void`                | Success callback (generated link) |
-| `onInviteLinkError` | `() => void`                | Error callback |
-
-A complete list of supported parameters is available <a href="https://support.appsflyer.com/hc/en-us/articles/115004480866-User-Invite-Tracking">here</a>.
-Custom parameters can be passed using a `userParams{}` nested object, as in the example above.
-
----
-
-##### <a id="trackCrossPromotionImpression"> **`trackCrossPromotionImpression("appID", "campaign"): void`**  (Cross Promotion)
-
-Use this call to track an impression use the following API call. Make sure to use the promoted App ID as it appears within the AppsFlyer dashboard.
-
-*Example:*
-```javascript
-window.plugins.appsFlyer.trackCrossPromotionImpression("com.myandroid.app", "myCampaign");
+$ ionic cordova plugin add cordova-plugin-appsflyer-sdk
 ```
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `appID` | `String`                    | Promoted Application ID |
-| `campaign` | `String`                    | Promoted Campaign |
-
-For more details about Cross-Promotion tracking please see <a href="https://support.appsflyer.com/hc/en-us/articles/115004481946-Cross-Promotion-Tracking">here</a>.
-
----
-
-##### <a id="trackAndOpenStore"> **`trackAndOpenStore("appID","campaign", options): void`**  (Cross Promotion)
-
-Use this call to track the click and launch the app store's app page (via Browser)
-
-*Example:*
+In your main ts file, declare a window variable:
 ```javascript
-var crossPromOptions {
-  customerID: "1234",
-  myCustomParameter: "newUser"
-};
-
-window.plugins.appsFlyer.trackAndOpenStore("com.myandroid.app", "myCampaign", crossPromOptions);
+declare var window;
 ```
-
-| parameter   | type                        | description |
-| ----------- |-----------------------------|--------------|
-| `appID` | `String`                    | Promoted Application ID |
-| `campaign` | `String`                    | Promoted Campaign |
-| `options` | `Object`                    | Additional Parameters to track |
-
-For more details about Cross-Promotion tracking please see <a href="https://support.appsflyer.com/hc/en-us/articles/115004481946-Cross-Promotion-Tracking">here</a>.
-
----
-
-### <a id="deep-linking-tracking"> Deep linking Tracking
-
-#### <a id="dl-android"> Android
-In ver. >4.2.5 deeplinking metadata (scheme/host) is sent automatically
-
-#### <a id="dl-ios"> iOS URL Types
-Add the following lines to your code to be able to track deeplinks with AppsFlyer attribution data:
-
-for pure Cordova - add a function 'handleOpenUrl' to your root, and call our SDK as shown:
+Now you can use the AppsFlyer plugin directly from cordova:
 ```javascript
-    window.plugins.appsFlyer.handleOpenUrl(url);
-```
-It appears as follows:
+import {Component} from '@angular/core';
+import {Platform} from '@ionic/angular';
 
-```javascript
-var handleOpenURL = function(url) {
-    window.plugins.appsFlyer.handleOpenUrl(url);
+declare var window;
+...
+export class HomePage {
+    constructor(public platform: Platform) {
+        this.platform.ready().then(() => {
+            window.plugins.appsFlyer.initSdk(options, success, error);
+        });
+    }
 }
 ```
-#### <a id='dl-ul'>Universal Links in iOS
-To enable Universal Links in iOS please follow the guide <a href="https://support.appsflyer.com/hc/en-us/articles/207032266-Setting-Deeplinking-on-iOS9-using-iOS-Universal-Links">here</a>.
 
-##### **Note**: Our plugin utilizes the
-
- ` - (BOOL)application:(UIApplication *)application 
- continueUserActivity:(NSUserActivity *)userActivity
- restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler; ` 
-
-##### method for Universal Links support. 
-
-##### ***If additional instances of the method exist in your code - merge all calls into one***
-
-##### (Available on cordova-plugin-appsflyer-sdk 4.2.24 and higher )
-
----
-
-## Demo
-
-This plugin has a `examples` folder with `demoA` (Angular 1)  and `demoC` (Cordova) projects bundled with it. To give it a try , clone this repo and from root a.e. `cordova-plugin-appsflyer-sdk` execute the following:
-
-For Cordova:
-```sh
-npm run setup_c 
+### 2 - Using Ionic native plugin
+####  Ionic 4
+run this commands:
+**With Cordova**:
 ```
--  `npm run demo_c.ra` - runs Android
--  `npm run demo_c.ba` - builds Android
--  `npm run demo_c.ri` - runs iOS
--  `npm run demo_c.bi` - builds iOS
-
-
-For Angular:
-```sh
-npm run setup_a
+$ ionic cordova plugin add cordova-plugin-appsflyer-sdk
+$ npm install @ionic-native/appsflyer
 ```
--  `npm run demo_a.ra` - runs Android
--  `npm run demo_a.ba` - builds Android
--  `npm run demo_a.ri` - runs iOS
--  `npm run demo_a.bi` - builds iOS
+**With Capacitor**:
+```
+$ npm install cordova-plugin-appsflyer-sdk
+$ npm install @ionic-native/appsflyer
+ionic cap sync
+```
+Then add the following to `app.module.ts`
+```
+import { Appsflyer } from "@ionic-native/appsflyer/ngx";
+...
+providers: [
+Appsflyer,
+...,
+]
+```
+and in your main ts file:
+```
+import { Appsflyer } from '@ionic-native/appsflyer/ngx';
+import {Platform} from '@ionic/angular';
 
-
-
-![demo printscreen](examples/demo_example.png?raw=true)
+constructor(private appsflyer: Appsflyer, public platform: Platform) { 
+...
+this.platform.ready().then(() => {
+            this.appsflyer.initSdk(options);
+        });
+}
+```
+####  Ionic 2/3
+If you're using Ionic 2/3, you'd need to install a previous version of the Ionic Native dependency (notice the **@4** at the end of the npm install command):
+```
+$ ionic cordova plugin add cordova-plugin-appsflyer-sdk
+$ npm install @ionic-native/appsflyer@4
+```
+Then add the following to `app.module.ts`(with no **/ngx**)
+```
+import { Appsflyer } from "@ionic-native/appsflyer";
+...
+providers: [
+Appsflyer,
+...,
+]
+```
+And finally in your main ts file:
+```
+import { Appsflyer } from '@ionic-native/appsflyer';
+```
+Check out the full [API](/docs/API.md) for more information

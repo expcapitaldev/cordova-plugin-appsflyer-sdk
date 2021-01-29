@@ -86,12 +86,6 @@
         <header-file src="src/ios/AppsFlyerShareInviteHelper.h"/>
         <header-file src="src/ios/AppsFlyerX+AppController.h"/>
         <source-file src="src/ios/AppsFlyerX+AppController.m"/>
-        <podspec>
-            <config>
-            </config>
-            <pods use-frameworks="true">
-                <pod name="AppsFlyerFramework" spec="6.1.3"/>
-            </pods>
-        </podspec>
+		<framework src="AppsFlyerFramework" type="podspec" spec="6.1.3"/>
     </platform>
 </plugin>
